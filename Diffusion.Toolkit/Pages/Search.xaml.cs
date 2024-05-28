@@ -33,6 +33,7 @@ using static System.Net.WebRequestMethods;
 using WPFLocalizeExtension.Engine;
 using System.Windows.Documents;
 using System.Windows.Media;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Diffusion.Toolkit.Pages
 {
@@ -686,10 +687,12 @@ namespace Diffusion.Toolkit.Pages
                             }
                         }
 
-                        _currentModeSettings.LastQuery = _model.SearchText;
+                        _currentModeSettings.LastQuery = _model.SearchText??"";
 
                         // need a better way to do this... property?
-                        var query = _model.SearchText;
+                        var query =EnrichQuery( _model.SearchText??"");
+
+
 
                         if (_currentModeSettings.IsFavorite)
                         {
@@ -1355,7 +1358,7 @@ namespace Diffusion.Toolkit.Pages
             }
             else
             {
-                var query = _model.SearchText;
+                var query =EnrichQuery( _model.SearchText??"");
                 bool showImages = true;
 
                 if (_currentModeSettings != null)
@@ -1487,6 +1490,50 @@ namespace Diffusion.Toolkit.Pages
 
 
 
+        }
+
+        public static bool IsValidFilename(string path)
+        {
+            // Regular expression to match valid filenames
+            // Allows optional drive letter, path with directories, and requires a filename with an extension
+            // Disallows illegal characters like * in the path
+            string pattern = @"^([a-zA-Z]:\\)?([^:\*\?\""]+)$";
+
+            return Regex.IsMatch(path, pattern,RegexOptions.IgnoreCase);
+        }
+        public static bool IsFilename(string path)
+        {
+            // Regular expression to match valid filenames
+            // Allows optional drive letter, path with directories, and requires a filename with an extension
+            // Disallows illegal characters like * in the path
+            string pattern = @"^""?([a-zA-Z]:\\)?([^:\*\?\""]+(\.(jpe?g|png|tif?|gif|crw|cr2|aws|heif|heic)))""?$";
+
+            return Regex.IsMatch(path, pattern, RegexOptions.IgnoreCase);
+        }
+        public static string RemoveDoubleQuotes(string input)
+        {
+            return input.Replace("\"", "");
+        }
+        private static string EnrichQuery(string query)
+        {
+            //Implement file name search [
+            ///The following will trigger filename search:
+            //somefile.jpg
+            //somefile.png
+            //\someFilename
+            //\partialPathName
+            //"c:\mypath\test.txt"
+            //c:\mypath\test.txt
+            if (!string.IsNullOrWhiteSpace(query) 
+                    && ( (query.IndexOf("\\") >= 0 && IsValidFilename(query.Trim()))
+                    || IsFilename(query))
+                ) //if contains path name
+            {
+                query = $"path: *{RemoveDoubleQuotes(query)}*";
+            }
+            //Implement file name search ]
+
+            return query;
         }
 
         private async Task LoadMatchesAsync()
@@ -1627,7 +1674,7 @@ namespace Diffusion.Toolkit.Pages
             }
             else
             {
-                var query = _model.SearchText;
+                var query =EnrichQuery( _model.SearchText??"");
                 bool showImages = true;
 
                 if (_currentModeSettings.IsFavorite)
