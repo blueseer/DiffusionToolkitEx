@@ -509,7 +509,10 @@ namespace Diffusion.Toolkit
 
                     if (_settings.AutoTagNSFW)
                     {
-                        if (_settings.NSFWTags.Any(t => image.Prompt != null && image.Prompt.ToLower().Contains(t.Trim().ToLower())))
+                        if (_settings.NSFWTags.Any(t => (image.Prompt != null && image.Prompt.ToLower().Contains(t.Trim().ToLower()))
+                                                        ||
+                                                        (!string.IsNullOrWhiteSpace(image.Path) && image.Path.ToLower().Contains(t.Trim().ToLower())))
+                            )
                         {
                             image.NSFW = true;
                         }

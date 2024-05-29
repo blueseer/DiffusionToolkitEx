@@ -123,7 +123,9 @@ namespace Diffusion.Toolkit
             {
                 var matches = _dataStore.QueryAll();
 
-                var ids = matches.Where(m => _settings.NSFWTags.Any(t => m.Prompt != null && m.Prompt.ToLower().Contains(t.Trim().ToLower()))).Select(m => m.Id).ToList();
+                var ids = matches.Where(m => _settings.NSFWTags.Any(t => m.Prompt != null && (m.Prompt.ToLower().Contains(t.Trim().ToLower()))
+                                                 || (!string.IsNullOrWhiteSpace(m.Path) && m.Path.ToLower().Contains(t.Trim().ToLower()))
+                                                )).Select(m => m.Id).ToList();
 
                 await Task.Run(() =>
                 {
