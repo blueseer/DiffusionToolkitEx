@@ -632,6 +632,7 @@ namespace Diffusion.Toolkit
             {
                 _navigatorService.Goto("search");
                 _model.ActiveView = "Albums";
+                _model.CurrentAlbum = null;//set album to home, otherwise it's stuck inside child album
                 _search.ShowAlbums();
             });
 

@@ -768,14 +768,30 @@ namespace Diffusion.Toolkit.Controls
             RemoveFromAlbumCommand?.Execute(null);
         }
 
+
+
+        private AlbumModel GetSelectedAlbum()
+        {
+            var album = (ImageEntry)ThumbnailListView.SelectedItems[0];
+
+            var albumModel = new AlbumModel()
+            {
+                Id = album.Id,
+                Name = album.Name,
+            };
+            return albumModel;
+        }
+
         private void RenameAlbum_OnClick(object sender, RoutedEventArgs e)
         {
-            RenameAlbumCommand?.Execute(null);
+            AlbumModel albumModel = GetSelectedAlbum();
+            RenameAlbumCommand?.Execute(albumModel);
         }
 
         private void RemoveAlbum_OnClick(object sender, RoutedEventArgs e)
         {
-            RemoveAlbumCommand?.Execute(null);
+            AlbumModel albumModel = GetSelectedAlbum();
+            RemoveAlbumCommand?.Execute(albumModel);
         }
 
         private void ThumbnailListView_OnMouseUp(object sender, MouseButtonEventArgs e)

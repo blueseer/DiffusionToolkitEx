@@ -2124,7 +2124,7 @@ namespace Diffusion.Toolkit.Pages
 
         private void RenameAlbum_OnClick(object sender, RoutedEventArgs e)
         {
-            _model.MainModel.RemoveAlbumCommand.Execute(null);
+            _model.MainModel.RenameAlbumCommand.Execute(null);
         }
 
         private void DropImagesOnAlbum(object sender, DragEventArgs e)
