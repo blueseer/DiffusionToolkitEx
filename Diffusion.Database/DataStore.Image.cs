@@ -27,7 +27,7 @@ namespace Diffusion.Database
         public void DeleteImage(int id)
         {
             using var db = OpenConnection();
-            
+
             var query = "DELETE FROM AlbumImage WHERE ImageId = @Id";
 
             var command = db.CreateCommand(query);
@@ -104,7 +104,7 @@ namespace Diffusion.Database
             using var db = OpenConnection();
 
             var count = db.ExecuteScalar<int>("SELECT COUNT(*) FROM Image WHERE PATH LIKE ? || '%'", path);
-            
+
             db.Close();
 
             return count;
@@ -114,7 +114,7 @@ namespace Diffusion.Database
         {
             using var db = OpenConnection();
 
-            var images =  db.Query<ImagePath>("SELECT Id, FolderId, Path FROM Image WHERE FolderId = ?", folderId);
+            var images = db.Query<ImagePath>("SELECT Id, FolderId, Path FROM Image WHERE FolderId = ?", folderId);
 
             foreach (var image in images)
             {
@@ -148,7 +148,7 @@ namespace Diffusion.Database
             {
                 nameof(Image.Id),
                 nameof(Image.CustomTags),
-                nameof(Image.Rating),
+                //nameof(Image.Rating),
                 nameof(Image.Favorite),
                 nameof(Image.ForDeletion),
                 nameof(Image.NSFW)
@@ -159,29 +159,34 @@ namespace Diffusion.Database
 
             var properties = typeof(Image).GetProperties().Where(p => !exclude.Contains(p.Name)).ToList();
 
-            var query = "UPDATE Image SET ";
-            var setList = new List<string>();
-
-            foreach (var property in properties.Where(p => p.Name != nameof(Image.Path)))
-            {
-                if (property.Name == nameof(Image.NSFW))
-                {
-                    setList.Add($"{property.Name} = {property.Name} OR {property.Name}");
-                }
-                else
-                {
-                    setList.Add($"{property.Name} = @{property.Name}");
-                }
-            }
-
-            query += string.Join(", ", setList);
-
-            query += " WHERE Path = @Path";
-
-            var command = db.CreateCommand(query);
-
             foreach (var image in images)
             {
+                var query = "UPDATE Image SET ";
+                var setList = new List<string>();
+
+                foreach (var property in properties.Where(p => p.Name != nameof(Image.Path)))
+                {
+                    if (property.Name == nameof(Image.Rating) && property.GetValue(image) == null)
+                    {
+                        // Skip adding this property to the update query if the new Rating is null
+                        // continue;
+                    }
+                    else if (property.Name == nameof(Image.NSFW))
+                    {
+                        setList.Add($"{property.Name} = {property.Name} OR {property.Name}");
+                    }
+                    else
+                    {
+                        setList.Add($"{property.Name} = @{property.Name}");
+                    }
+                }
+
+                query += string.Join(", ", setList);
+
+                query += " WHERE Path = @Path";
+
+                var command = db.CreateCommand(query);
+
                 if (cancellationToken.IsCancellationRequested)
                 {
                     break;
@@ -200,7 +205,19 @@ namespace Diffusion.Database
 
                 foreach (var property in properties)
                 {
-                    command.Bind($"@{property.Name}", property.GetValue(image));
+                    if (property.Name == nameof(Image.Rating))
+                    {
+                        var val = property.GetValue(image);
+                        if (val != null) //Only overwrite if XMP value is not null
+                        {
+                            command.Bind($"@{property.Name}", val); //write new value
+                        } //else don't overwrite the old rating
+                    }
+                    else
+                    {
+                        command.Bind($"@{property.Name}", property.GetValue(image));
+                    }
+
                 }
 
                 updated += command.ExecuteNonQuery();
@@ -351,7 +368,7 @@ namespace Diffusion.Database
             using var db = OpenConnection();
 
             var dirName = Path.GetDirectoryName(path);
-            
+
             if (!folderIdCache.TryGetValue(dirName, out var folderId))
             {
                 folderId = AddOrUpdateFolder(db, dirName);

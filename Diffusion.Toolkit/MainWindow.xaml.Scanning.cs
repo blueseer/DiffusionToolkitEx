@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Diffusion.Database;
+using ImageKit.Utility;
 
 namespace Diffusion.Toolkit
 {
@@ -501,6 +502,8 @@ namespace Diffusion.Toolkit
                         FileSize = file.FileSize,
                         NoMetadata = file.NoMetadata
                     };
+
+                    image.Rating = XmpHelper.GetRating(file.Path);//get rating from XMP file
 
                     if (!string.IsNullOrEmpty(file.HyperNetwork) && !file.HyperNetworkStrength.HasValue)
                     {

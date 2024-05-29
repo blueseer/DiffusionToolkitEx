@@ -15,6 +15,10 @@ using Diffusion.Toolkit.Localization;
 using Diffusion.Toolkit.Models;
 using Microsoft.Extensions.Options;
 using Image = Diffusion.Database.Image;
+using XmpCore;
+using System.IO;
+using System.Text;
+using ImageKit.Utility;
 
 namespace Diffusion.Toolkit.Controls
 {
@@ -150,12 +154,16 @@ namespace Diffusion.Toolkit.Controls
             {
                 case nameof(ThumbnailViewModel.SelectedImageEntry):
                     SelectedImageEntry = Model.SelectedImageEntry;
+                    if(false && SelectedImageEntry!= null) //disabled for now
+                        SelectedImageEntry.Rating = XmpHelper.GetRating(SelectedImageEntry.Path, SelectedImageEntry.Rating);
                     break;
                 case nameof(ThumbnailViewModel.Page):
                     Page = Model.Page;
                     break;
             }
         }
+
+
 
         //public IEnumerable<ImageEntry> SelectedImages => ThumbnailListView.SelectedItems.Cast<ImageEntry>().ToList();
 

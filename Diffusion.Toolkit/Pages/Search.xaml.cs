@@ -34,6 +34,7 @@ using WPFLocalizeExtension.Engine;
 using System.Windows.Documents;
 using System.Windows.Media;
 using static System.Net.Mime.MediaTypeNames;
+using ImageKit.Utility;
 
 namespace Diffusion.Toolkit.Pages
 {
@@ -687,10 +688,10 @@ namespace Diffusion.Toolkit.Pages
                             }
                         }
 
-                        _currentModeSettings.LastQuery = _model.SearchText??"";
+                        _currentModeSettings.LastQuery = _model.SearchText ?? "";
 
                         // need a better way to do this... property?
-                        var query =EnrichQuery( _model.SearchText??"");
+                        var query = EnrichQuery(_model.SearchText ?? "");
 
 
 
@@ -1358,7 +1359,7 @@ namespace Diffusion.Toolkit.Pages
             }
             else
             {
-                var query =EnrichQuery( _model.SearchText??"");
+                var query = EnrichQuery(_model.SearchText ?? "");
                 bool showImages = true;
 
                 if (_currentModeSettings != null)
@@ -1446,6 +1447,12 @@ namespace Diffusion.Toolkit.Pages
                     Dispatcher = Dispatcher
                 };
 
+                if (imageEntry.Rating == null) //overwrite from XMP only if not set
+                {
+                    imageEntry.Rating = XmpHelper.GetRating(file.Path, file.Rating);
+                    DataStore.SetRating(imageEntry.Id, imageEntry.Rating);
+                }
+
                 images.Add(imageEntry);
 
                 //Dispatcher.Invoke(() =>
@@ -1499,7 +1506,7 @@ namespace Diffusion.Toolkit.Pages
             // Disallows illegal characters like * in the path
             string pattern = @"^([a-zA-Z]:\\)?([^:\*\?\""]+)$";
 
-            return Regex.IsMatch(path, pattern,RegexOptions.IgnoreCase);
+            return Regex.IsMatch(path, pattern, RegexOptions.IgnoreCase);
         }
         public static bool IsFilename(string path)
         {
@@ -1524,8 +1531,8 @@ namespace Diffusion.Toolkit.Pages
             //\partialPathName
             //"c:\mypath\test.txt"
             //c:\mypath\test.txt
-            if (!string.IsNullOrWhiteSpace(query) 
-                    && ( (query.IndexOf("\\") >= 0 && IsValidFilename(query.Trim()))
+            if (!string.IsNullOrWhiteSpace(query)
+                    && ((query.IndexOf("\\") >= 0 && IsValidFilename(query.Trim()))
                     || IsFilename(query))
                 ) //if contains path name
             {
@@ -1674,7 +1681,7 @@ namespace Diffusion.Toolkit.Pages
             }
             else
             {
-                var query =EnrichQuery( _model.SearchText??"");
+                var query = EnrichQuery(_model.SearchText ?? "");
                 bool showImages = true;
 
                 if (_currentModeSettings.IsFavorite)
