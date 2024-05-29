@@ -63,7 +63,7 @@ A folder named `build` will be created, containing all the necessary files.
 * Drag and Drop
     * Drag and drop images to another folder to move (CTRL-drag to copy)
 
-#Additional feature in Ex version
+# Additional Features in Ex version
 * Read XMP rating from file
 * Fix Album Rename/Remove in Thumbnail view
 * Enable filename search within search box
