@@ -64,9 +64,9 @@ A folder named `build` will be created, containing all the necessary files.
     * Drag and drop images to another folder to move (CTRL-drag to copy)
 
 # Additional Features in Ex version
-* Read XMP rating from file
+* Read rating from .xmp file (will not overwrite original unless XMP file existed)
 * Fix Album Rename/Remove in Thumbnail view
-* Enable filename search within search box
+* Enable filename search within search box .e.g. "somefile.png" will match in search
 
 # Supported formats
 
