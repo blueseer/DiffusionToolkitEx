@@ -64,7 +64,9 @@ A folder named `build` will be created, containing all the necessary files.
     * Drag and drop images to another folder to move (CTRL-drag to copy)
 
 # Additional Features in Ex version
-* Read rating from .xmp file (will not overwrite original unless XMP file existed)
+* Read/Write rating from .xmp file (will not overwrite original unless XMP file existed)
+   * This will share ratings with other applications like Lightroom, On1 etc...
+   * This will also preserve the rating even if image is removed from database.
 * Fix Album Rename/Remove in Thumbnail view
 * Enable filename search within search box .e.g. "somefile.png" will match in search
 
