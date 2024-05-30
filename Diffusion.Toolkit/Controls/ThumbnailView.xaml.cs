@@ -440,8 +440,12 @@ namespace Diffusion.Toolkit.Controls
                 }
 
                 var ids = imageEntries.Select(x => x.Id).ToList();
+                
 
                 DataStore.SetRating(ids, effectiveRating);
+
+                var paths = imageEntries.Select(x => x.Path).ToList();
+                XmpHelper.SetXmpRatings(paths, effectiveRating);
             }
         }
 
@@ -464,6 +468,9 @@ namespace Diffusion.Toolkit.Controls
 
                 var ids = imageEntries.Select(x => x.Id).ToList();
                 DataStore.SetRating(ids, null);
+
+                var paths = imageEntries.Select(x => x.Path).ToList();
+                XmpHelper.SetXmpRatings(paths, null);
             }
         }
 
