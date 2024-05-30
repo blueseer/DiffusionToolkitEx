@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using Diffusion.Database;
 using ImageKit.Utility;
+using Diffusion.Toolkit.Common;
 
 namespace Diffusion.Toolkit
 {
@@ -503,7 +504,17 @@ namespace Diffusion.Toolkit
                         NoMetadata = file.NoMetadata
                     };
 
-                    image.Rating = XmpHelper.GetRating(file.Path);//get rating from XMP file
+                    ///get rating from XMP file                    
+                    //var xd = (new XmpHelper()).GetXmpData(file.Path);
+                    int? rating = XmpHelper.GetXmpRating(file.Path);
+                    if (rating != null)
+                    {
+                        if (rating == -1)
+                            image.ForDeletion = true;
+                        else
+                            image.Rating = rating;
+                    }
+
 
                     if (!string.IsNullOrEmpty(file.HyperNetwork) && !file.HyperNetworkStrength.HasValue)
                     {

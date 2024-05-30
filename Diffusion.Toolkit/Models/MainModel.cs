@@ -73,7 +73,9 @@ public class MainModel : BaseNotify
     private ICommand _cleanRemovedFoldersCommand;
     private ICommand _showFilterCommand;
     private ICommand _toggleAutoRefresh;
+    private ICommand _toggleAutoRefreshXmp;
     private bool _autoRefresh;
+    private bool _autoRefreshXmp;
     private IEnumerable<ModelViewModel> _imageModels;
     private IEnumerable<string> _imageModelNames;
     private ObservableCollection<FolderViewModel> _folders;
@@ -495,12 +497,22 @@ public class MainModel : BaseNotify
         set => SetField(ref _toggleAutoRefresh, value);
     }
 
+    public ICommand ToggleAutoRefreshXmp
+    {
+        get => _toggleAutoRefreshXmp;
+        set => SetField(ref _toggleAutoRefreshXmp, value);
+    }
+
     public bool AutoRefresh
     {
         get => _autoRefresh;
         set => SetField(ref _autoRefresh, value);
     }
-
+    public bool AutoRefreshXmp
+    {
+        get => _autoRefreshXmp;
+        set => SetField(ref _autoRefreshXmp, value);
+    }
 
     public ObservableCollection<FolderViewModel> Folders
     {

@@ -140,6 +140,7 @@ namespace Diffusion.Toolkit
 
             _model.ShowFilterCommand = new RelayCommand<object>((o) => _search?.ShowFilter());
             _model.ToggleAutoRefresh = new RelayCommand<object>((o) => ToggleAutoRefresh());
+            _model.ToggleAutoRefreshXmp = new RelayCommand<object>((o) => ToggleAutoRefreshXmp());
 
             _model.SortAlbumCommand = new RelayCommand<object>((o) => SortAlbums());
 
@@ -232,6 +233,12 @@ namespace Diffusion.Toolkit
             _settings.AutoRefresh = !_settings.AutoRefresh;
             _model.AutoRefresh = _settings.AutoRefresh;
         }
+        private void ToggleAutoRefreshXmp()
+        {
+            _settings.AutoRefreshXmp = !_settings.AutoRefreshXmp;
+            _model.AutoRefreshXmp = _settings.AutoRefreshXmp;
+        }
+
 
         private void Escape()
         {
@@ -240,7 +247,7 @@ namespace Diffusion.Toolkit
 
         private void Refresh()
         {
-            _search.SearchImages(null);
+            _search.SearchImages("ForceRefresh");
         }
 
         private PreviewWindow? _previewWindow;
@@ -425,7 +432,7 @@ namespace Diffusion.Toolkit
                     MessageBox.Show(this, "An error occured while loading configuration settings. The application will exit", "Startup failed!", MessageBoxButton.OK, MessageBoxImage.Error);
                     throw;
                 }
-              
+
             }
 
 
@@ -434,6 +441,10 @@ namespace Diffusion.Toolkit
                 if (args.SettingName == nameof(Settings.AutoRefresh))
                 {
                     _model.AutoRefresh = _settings.AutoRefresh;
+                }
+                else if (args.SettingName == nameof(Settings.AutoRefreshXmp))
+                {
+                    _model.AutoRefreshXmp = _settings.AutoRefreshXmp;
                 }
             };
 
@@ -470,6 +481,7 @@ namespace Diffusion.Toolkit
             }
 
             _model.AutoRefresh = _settings.AutoRefresh;
+            _model.AutoRefreshXmp = _settings.AutoRefreshXmp;
             _model.HideNSFWCommand = _settings.HideNSFW;
             QueryBuilder.HideNSFW = _model.HideNSFWCommand;
             _model.NSFWBlurCommand = _settings.NSFWBlur;
@@ -499,7 +511,7 @@ namespace Diffusion.Toolkit
             _dataStoreOptions = new DataStoreOptions(dataStore);
 
             var total = _dataStore.GetTotal();
-            
+
             var text = GetLocalizedText("Main.Status.ImagesInDatabase").Replace("{count}", $"{total:n0}");
 
             _model.Status = text;

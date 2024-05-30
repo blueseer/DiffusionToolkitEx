@@ -56,6 +56,7 @@ namespace Diffusion.Toolkit
             _model.Theme = settings.Theme;
             _model.WatchFolders = settings.WatchFolders;
             _model.AutoRefresh = settings.AutoRefresh;
+            //_model.AutoRefreshXmp = settings.AutoRefreshXmp;
             _model.CheckForUpdatesOnStartup = settings.CheckForUpdatesOnStartup;
             _model.ScanForNewImagesOnStartup = settings.ScanForNewImagesOnStartup;
             _model.AutoTagNSFW = settings.AutoTagNSFW;

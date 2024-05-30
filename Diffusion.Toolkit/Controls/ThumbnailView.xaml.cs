@@ -19,6 +19,7 @@ using XmpCore;
 using System.IO;
 using System.Text;
 using ImageKit.Utility;
+using Diffusion.Toolkit.Common;
 
 namespace Diffusion.Toolkit.Controls
 {
@@ -154,8 +155,15 @@ namespace Diffusion.Toolkit.Controls
             {
                 case nameof(ThumbnailViewModel.SelectedImageEntry):
                     SelectedImageEntry = Model.SelectedImageEntry;
-                    if(false && SelectedImageEntry!= null) //disabled for now
-                        SelectedImageEntry.Rating = XmpHelper.GetRating(SelectedImageEntry.Path, SelectedImageEntry.Rating);
+                    if (SelectedImageEntry != null) 
+                    {
+                        var rate = XmpHelper.GetXmpRating(SelectedImageEntry.Path, SelectedImageEntry.Rating);
+                        if (rate != SelectedImageEntry.Rating)
+                        {
+                            SelectedImageEntry.Rating = rate;
+                            DataStore.SetRating(SelectedImageEntry.Id, rate);
+                        }
+                    }
                     break;
                 case nameof(ThumbnailViewModel.Page):
                     Page = Model.Page;
@@ -186,7 +194,7 @@ namespace Diffusion.Toolkit.Controls
                 case Key.Enter when e.KeyboardDevice.Modifiers == ModifierKeys.None:
                     OpenSelected();
                     break;
-                
+
                 case Key.Delete:
                 case Key.X:
                     {
@@ -201,7 +209,7 @@ namespace Diffusion.Toolkit.Controls
 
                         break;
                     }
-                
+
                 case Key.F when e.KeyboardDevice.Modifiers == ModifierKeys.None:
                     FavoriteSelected();
                     break;
@@ -763,7 +771,7 @@ namespace Diffusion.Toolkit.Controls
 
         private void RefreshAlbum_OnClick(object sender, RoutedEventArgs e)
         {
-            ReloadAlbums(); 
+            ReloadAlbums();
         }
 
         private void AddToAlbum_OnClick(object sender, RoutedEventArgs e)

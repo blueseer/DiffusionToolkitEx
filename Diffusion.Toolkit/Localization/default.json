@@ -11,6 +11,7 @@
   "Menu.View.Filter": "_Filter",
   "Menu.View.Refresh": "_Refresh",
   "Menu.View.AutoRefresh": "_Auto Refresh",
+  "Menu.View.AutoRefreshXmp": "Auto Refresh _XMP Rating",
   "Menu.View.Thumbnails": "_Thumbnails",
   "Menu.View.BlurNSFW": "Blur _NSFW",
   "Menu.View.HideNSFWFromResults": "_Hide NSFW from Results",

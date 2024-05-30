@@ -75,6 +75,7 @@
                 <MenuItem Header="{lex:Loc Menu.View.Filter}" Command="{Binding ShowFilterCommand}" InputGestureText="CTRL+F"/>
                 <MenuItem Header="{lex:Loc Menu.View.Refresh}" Command="{Binding Refresh}" InputGestureText="F5"/>
                 <MenuItem Header="{lex:Loc Menu.View.AutoRefresh}" IsChecked="{Binding AutoRefresh}" Command="{Binding ToggleAutoRefresh}"/>
+                <MenuItem Header="{lex:Loc Menu.View.AutoRefreshXmp}" IsChecked="{Binding AutoRefreshXmp}" Command="{Binding ToggleAutoRefreshXmp}"/>
                 <Separator/>
                 <MenuItem Header="Thumbnails">
                     <MenuItem Header="128x128" IsChecked="{Binding ThumbnailSize, Converter={StaticResource thumbSizeChecked}, ConverterParameter=128}" Command="{Binding SetThumbnailSize}" CommandParameter="128"/>

@@ -359,6 +359,14 @@ public class Settings : SettingsContainer, IScanOptions
         set => UpdateValue(ref _autoRefresh, value);
     }
 
+
+    private bool _autoRefreshXmp=false;
+    public bool AutoRefreshXmp
+    {
+        get => _autoRefreshXmp;
+        set => UpdateValue(ref _autoRefreshXmp, value);
+    }
+
     private string? _culture;
 
     public string? Culture

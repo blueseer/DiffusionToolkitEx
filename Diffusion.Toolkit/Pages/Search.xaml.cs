@@ -43,6 +43,7 @@ namespace Diffusion.Toolkit.Pages
         public bool Focus { get; set; }
         public Action? OnCompleted { get; set; }
         public bool GotoEnd { get; set; }
+        public bool RefreshXmp { get; set; } = false;
     }
 
     public class ModeSettings
@@ -794,11 +795,16 @@ namespace Diffusion.Toolkit.Pages
                     ThumbnailListView.Model.Page = _model.Page;
 
                     ThumbnailListView.SetPagingEnabled();
+
+
                 });
 
 
-
-                ReloadMatches(new ReloadOptions() { Focus = (string)obj != "ManualSearch" });
+                ReloadMatches(new ReloadOptions()
+                {
+                    Focus = (string)obj != "ManualSearch",
+                    RefreshXmp = (string)obj == "ForceRefresh"
+                });//Set Reloadoption to reset AutoRefreshXmp
             }
             catch (Exception e)
             {
@@ -1020,7 +1026,11 @@ namespace Diffusion.Toolkit.Pages
         {
             Task.Run(() =>
             {
+                bool tmpArx = _settings.AutoRefreshXmp;
+                if (options?.RefreshXmp == true) //force refresh
+                    _settings.AutoRefreshXmp = true;
                 LoadMatches();
+                _settings.AutoRefreshXmp = tmpArx;
                 ThumbnailListView.ResetView(options?.Focus ?? true, options?.GotoEnd ?? false);
                 Dispatcher.Invoke(() =>
                 {
@@ -1447,10 +1457,13 @@ namespace Diffusion.Toolkit.Pages
                     Dispatcher = Dispatcher
                 };
 
-                if (imageEntry.Rating == null) //overwrite from XMP only if not set
+                if (_settings.AutoRefreshXmp) //disable by default because too slow
                 {
-                    imageEntry.Rating = XmpHelper.GetRating(file.Path, file.Rating);
+                    //var xd = (new XmpHelper()).GetXmpData(file.Path);
+                    //imageEntry = ImageUtil.PopulateImage(xd, imageEntry);
+                    imageEntry.Rating = XmpHelper.GetXmpRating(file.Path, imageEntry.Rating);
                     DataStore.SetRating(imageEntry.Id, imageEntry.Rating);
+
                 }
 
                 images.Add(imageEntry);
