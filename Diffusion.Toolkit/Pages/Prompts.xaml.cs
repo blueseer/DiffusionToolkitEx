@@ -212,6 +212,7 @@ namespace Diffusion.Toolkit.Pages
                 {
                     Id = file.Id,
                     Favorite = file.Favorite,
+                    Label=file.CustomTags,
                     ForDeletion = file.ForDeletion,
                     Rating = file.Rating,
                     Score = $"{file.AestheticScore:0.0}",

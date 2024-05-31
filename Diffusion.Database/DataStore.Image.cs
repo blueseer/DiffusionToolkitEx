@@ -147,7 +147,7 @@ namespace Diffusion.Database
             var exclude = new string[]
             {
                 nameof(Image.Id),
-                nameof(Image.CustomTags),
+                //nameof(Image.CustomTags),
                 //nameof(Image.Rating),
                 nameof(Image.Favorite),
                 nameof(Image.ForDeletion),

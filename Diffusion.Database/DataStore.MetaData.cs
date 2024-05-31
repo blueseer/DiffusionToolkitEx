@@ -147,7 +147,31 @@ namespace Diffusion.Database
             db.Commit();
         }
 
-        public void SetCustomTags(int id, string tags)
+        public void SetCustomTags(IEnumerable<int> ids, string? tags)
+        {
+            using var db = OpenConnection();
+            
+            db.BeginTransaction();
+
+            var query = "UPDATE Image SET CustomTags = @CustomTags WHERE Id = @Id";
+
+            var command = db.CreateCommand(query);
+
+            foreach (var id in ids)
+            {
+                command.Bind("@CustomTags", tags);
+                command.Bind("@Id", id);
+                command.ExecuteNonQuery();
+
+                //command.Bind("@Rating", rating);
+                //command.Bind("@Id", id);
+                //command.ExecuteNonQuery();
+            }
+
+            db.Commit();
+        }
+
+        public void SetCustomTags(int id, string? tags)
         {
             using var db = OpenConnection();
 

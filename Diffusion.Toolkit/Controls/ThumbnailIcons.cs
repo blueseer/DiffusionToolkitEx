@@ -31,6 +31,7 @@ public class ThumbnailIcons : FrameworkElement
                     case nameof(ImageEntry.AlbumCount):
                     case nameof(ImageEntry.ForDeletion):
                     case nameof(ImageEntry.Favorite):
+                    case nameof(ImageEntry.Label):
                     case nameof(ImageEntry.Rating):
                         var thumb = d as ThumbnailIcons;
                         thumb.InvalidateVisual();
@@ -92,6 +93,43 @@ public class ThumbnailIcons : FrameworkElement
         {
             drawingContext.DrawImage(_heartIcon, new Rect(new Point(x, y), new Size(24, 24)));
             x += 24;
+        }
+
+        if (Data.Label != null)
+        {
+            var labelText = Data.Label.Substring(0, 3);
+            var labelFormattedText = new FormattedText(labelText, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, _typeFace, 8, Brushes.Black, null, TextFormattingMode.Display, 92)
+            {
+                TextAlignment = TextAlignment.Center
+            };
+            // Calculate the size and position of the background rectangle
+            var backgroundMargin = 4; // Margin around the text for the background
+            var backgroundWidth = labelFormattedText.WidthIncludingTrailingWhitespace + backgroundMargin * 2;
+            var backgroundHeight = labelFormattedText.Height + backgroundMargin * 2;
+            var backgroundPosition = new Point(x + 30 - backgroundMargin, y + 8 - backgroundMargin);
+
+            var brColor = labelText.ToLower().Trim() switch
+            {
+                ""=>Brushes.White,
+                "sel" => Brushes.Red,
+                "red" => Brushes.Red,
+                "sec" => Brushes.Yellow,
+                "yel" => Brushes.Yellow,
+                "app" => Brushes.Green,
+                "gre" => Brushes.Green,
+                "rev" => Brushes.Teal,
+                "blu" => Brushes.Teal,
+                "to" => Brushes.Purple,
+                "pur" => Brushes.Purple,
+                _ => Brushes.White,
+            };
+
+
+            // Draw the white background
+            drawingContext.DrawRectangle(brColor, null, new Rect(backgroundPosition, new Size(backgroundWidth, backgroundHeight)));
+
+            drawingContext.DrawText(labelFormattedText, new Point(x + 35, y + 8));
+            //x += labelFormattedText.WidthIncludingTrailingWhitespace + 4; // Adjust spacing as needed
         }
 
         if (Data.Rating.HasValue)

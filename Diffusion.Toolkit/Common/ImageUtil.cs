@@ -28,6 +28,10 @@ namespace Diffusion.Toolkit.Common
                         image.Rating=xd.Rating;
                     }
                 }
+                if(xd.Label!=null)
+                {
+                    image.Label = xd.Label;
+                }
             }
             return image;
         }

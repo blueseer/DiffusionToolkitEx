@@ -903,6 +903,7 @@ namespace Diffusion.Toolkit.Pages
                 {
                     imageViewModel.Id = image.Id;
                     imageViewModel.Favorite = image.Favorite;
+                    imageViewModel.Label = image.Label;
                     imageViewModel.Date = image.CreatedDate.ToString("G", LocalizeDictionary.CurrentCulture);
                     imageViewModel.Rating = image.Rating;
                     imageViewModel.NSFW = image.NSFW;
@@ -943,7 +944,6 @@ namespace Diffusion.Toolkit.Pages
 
                     imageViewModel.Width = parameters.Width;
                     imageViewModel.Height = parameters.Height;
-
                     imageViewModel.ModelHash = parameters.ModelHash;
                     imageViewModel.Seed = parameters.Seed;
                     imageViewModel.AestheticScore = $"{parameters.AestheticScore}";
@@ -1438,13 +1438,14 @@ namespace Diffusion.Toolkit.Pages
             var count = 0;
 
 
-
+            XmpHelper xmp = new XmpHelper();
             foreach (var file in matches)
             {
                 var imageEntry = new ImageEntry(rId)
                 {
                     Id = file.Id,
                     Favorite = file.Favorite,
+                    Label=file.CustomTags,
                     ForDeletion = file.ForDeletion,
                     Rating = file.Rating,
                     Score = $"{file.AestheticScore:0.0}",
@@ -1459,11 +1460,10 @@ namespace Diffusion.Toolkit.Pages
 
                 if (_settings.AutoRefreshXmp) //disable by default because too slow
                 {
-                    //var xd = (new XmpHelper()).GetXmpData(file.Path);
-                    //imageEntry = ImageUtil.PopulateImage(xd, imageEntry);
-                    imageEntry.Rating = XmpHelper.GetXmpRating(file.Path, imageEntry.Rating);
-                    DataStore.SetRating(imageEntry.Id, imageEntry.Rating);
-
+                    var xd = xmp.GetXmpData(file.Path);
+                    imageEntry = ImageUtil.PopulateImage(xd, imageEntry);
+                    DataStore.SetRating(file.Id,imageEntry.Rating);
+                    DataStore.SetCustomTags(file.Id, imageEntry.Label);
                 }
 
                 images.Add(imageEntry);
@@ -1767,6 +1767,7 @@ namespace Diffusion.Toolkit.Pages
                 {
                     Id = file.Id,
                     Favorite = file.Favorite,
+                    Label=file.CustomTags,
                     ForDeletion = file.ForDeletion,
                     Rating = file.Rating,
                     Score = $"{file.AestheticScore:0.0}",
@@ -2053,6 +2054,7 @@ namespace Diffusion.Toolkit.Pages
             {
                 image.NSFW = imageData.NSFW;
                 image.Favorite = imageData.Favorite;
+                image.Label = imageData.CustomTags;
                 image.Rating = imageData.Rating;
                 image.ForDeletion = imageData.ForDeletion;
             }

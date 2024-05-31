@@ -25,6 +25,7 @@ public class ImageViewModel : BaseNotify
     private string _otherParameters;
     private string _modelName;
     private string _date;
+    private string? _label;
 
     private bool _favorite;
     private int? _rating;
@@ -181,6 +182,13 @@ public class ImageViewModel : BaseNotify
         get => _favorite;
         set => SetField(ref _favorite, value);
     }
+
+    public string? Label
+    {
+        get => _label;
+        set => SetField(ref _label, value);
+    }
+
 
     public int? Rating
     {

@@ -38,7 +38,7 @@ public class ImageEntry : BaseNotify
     private int _albumCount;
     private IEnumerable<string> _albums;
     private bool _unavailable;
-
+    private string? _label=null;
     public ImageEntry(long requestId)
     {
         _requestId = requestId;
@@ -63,7 +63,11 @@ public class ImageEntry : BaseNotify
         get => _name;
         set => SetField(ref _name, value);
     }
-
+    public string? Label
+    {
+        get => _label;
+        set => SetField(ref _label, value);
+    }
     public bool ForDeletion
     {
         get => _forDeletion;

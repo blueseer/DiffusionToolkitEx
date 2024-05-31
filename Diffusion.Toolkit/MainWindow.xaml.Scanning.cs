@@ -464,7 +464,7 @@ namespace Diffusion.Toolkit
             }
 
             var scanning = GetLocalizedText("Actions.Scanning.Status");
-
+            var xmp = new XmpHelper();
             foreach (var file in MetadataScanner.Scan(filesToScan))
             {
                 if (cancellationToken.IsCancellationRequested)
@@ -505,14 +505,18 @@ namespace Diffusion.Toolkit
                     };
 
                     ///get rating from XMP file                    
-                    //var xd = (new XmpHelper()).GetXmpData(file.Path);
-                    int? rating = XmpHelper.GetXmpRating(file.Path);
-                    if (rating != null)
+                    var xd = xmp.GetXmpData(file.Path);
+                    if(xd != null)
                     {
-                        if (rating == -1)
-                            image.ForDeletion = true;
-                        else
-                            image.Rating = rating;
+                        int? rating = xd.Rating;
+                        image.CustomTags = xd.Label;
+                        if (rating != null)
+                        {
+                            if (rating == -1)
+                                image.ForDeletion = true;
+                            else
+                                image.Rating = rating;
+                        }
                     }
 
 

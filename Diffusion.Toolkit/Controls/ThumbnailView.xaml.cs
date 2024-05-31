@@ -157,12 +157,18 @@ namespace Diffusion.Toolkit.Controls
                     SelectedImageEntry = Model.SelectedImageEntry;
                     if (SelectedImageEntry != null) 
                     {
-                        var rate = XmpHelper.GetXmpRating(SelectedImageEntry.Path, SelectedImageEntry.Rating);
-                        if (rate != SelectedImageEntry.Rating)
-                        {
-                            SelectedImageEntry.Rating = rate;
-                            DataStore.SetRating(SelectedImageEntry.Id, rate);
-                        }
+                        XmpHelper xmp = new();
+                        var xd = xmp.GetXmpData(SelectedImageEntry.Path);
+                        SelectedImageEntry=ImageUtil.PopulateImage(xd, SelectedImageEntry);
+                        DataStore.SetRating(SelectedImageEntry.Id, SelectedImageEntry.Rating);
+                        DataStore.SetCustomTags(SelectedImageEntry.Id, SelectedImageEntry.Label);
+
+                        //var rate = XmpHelper.GetXmpRating(SelectedImageEntry.Path, SelectedImageEntry.Rating);
+                        //if (rate != SelectedImageEntry.Rating)
+                        //{
+                        //    SelectedImageEntry.Rating = rate;
+                        //    DataStore.SetRating(SelectedImageEntry.Id, rate);
+                        //}
                     }
                     break;
                 case nameof(ThumbnailViewModel.Page):
@@ -218,7 +224,7 @@ namespace Diffusion.Toolkit.Controls
                     NSFWSelected();
                     break;
 
-                case >= Key.D0 and <= Key.D9 when e.KeyboardDevice.Modifiers == ModifierKeys.None:
+                case >= Key.D1 and <= Key.D5 when e.KeyboardDevice.Modifiers == ModifierKeys.None:
                     {
                         var rating = e.Key switch
                         {
@@ -227,15 +233,35 @@ namespace Diffusion.Toolkit.Controls
                             Key.D3 => 3,
                             Key.D4 => 4,
                             Key.D5 => 5,
-                            Key.D6 => 6,
-                            Key.D7 => 7,
-                            Key.D8 => 8,
-                            Key.D9 => 9,
-                            Key.D0 => 10,
+                            //Key.D6 => 6,
+                            //Key.D7 => 7,
+                            //Key.D8 => 8,
+                            //Key.D9 => 9,
+                            //Key.D0 => 10,
                         };
                         RateSelected(rating);
                     }
-
+                    break;
+                case >= Key.D6 and <= Key.D9 when e.KeyboardDevice.Modifiers == ModifierKeys.None:
+                    {
+                        var label = e.Key switch
+                        {
+                            //Key.D1 => 1,
+                            //Key.D2 => 2,
+                            //Key.D3 => 3,
+                            //Key.D4 => 4,
+                            //Key.D5 => 5,
+                            Key.D6 => "Select",
+                            Key.D7 => "Second",
+                            Key.D8 => "Approved",
+                            Key.D9 => "Review",
+                            //Key.D0 => "Todo",
+                        };
+                        LabelSelected(label);
+                    }
+                    break;
+                case Key.D0 when e.KeyboardDevice.Modifiers == ModifierKeys.None:
+                    LabelSelected("To Do");
                     break;
                 case >= Key.NumPad0 and <= Key.NumPad9 when e.KeyboardDevice.Modifiers == ModifierKeys.None:
                     {
@@ -416,6 +442,38 @@ namespace Diffusion.Toolkit.Controls
             }
         }
 
+        private void LabelSelected(string label)
+        {
+            if (ThumbnailListView.SelectedItems != null)
+            {
+                var imageEntries = ThumbnailListView.SelectedItems.Cast<ImageEntry>().ToList();
+
+                string? effectiveLabel = label;
+
+                if (imageEntries.Count(i => i.Label == label) > imageEntries.Count / 2)
+                {
+                    effectiveLabel = null;
+                }
+
+                foreach (var entry in imageEntries)
+                {
+                    entry.Label = effectiveLabel;
+
+                    if (Model.CurrentImage != null && Model.CurrentImage.Path == entry.Path)
+                    {
+                        Model.CurrentImage.Label = entry.Label;
+                    }
+                }
+
+                var ids = imageEntries.Select(x => x.Id).ToList();
+
+
+                DataStore.SetCustomTags(ids, effectiveLabel);
+
+                var paths = imageEntries.Select(x => x.Path).ToList();
+                XmpHelper.SetXmpLabels(paths, effectiveLabel);
+            }
+        }
         private void RateSelected(int rating)
         {
             if (ThumbnailListView.SelectedItems != null)
