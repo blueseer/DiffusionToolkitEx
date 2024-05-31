@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Diffusion.Common\Diffusion.Common.csproj" />
+    <ProjectReference Include="..\ImageKit.Utility\ImageKit.Utility.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -383,10 +383,12 @@ namespace Diffusion.Toolkit
                 {
                     File.Move(image.Path, newPath);
 
-                    if (File.Exists(txtPath))
-                    {
-                        File.Move(txtPath, newTxtPath);
-                    }
+                    //if (File.Exists(txtPath))
+                    //{
+                    //    File.Move(txtPath, newTxtPath);
+                    //}
+
+                    ImgHelper.MoveExtFiles(image.Path, newPath);
 
                     if (remove)
                     {

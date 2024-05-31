@@ -15,6 +15,7 @@ using WPFLocalizeExtension.Providers;
 using System.Collections.ObjectModel;
 using Diffusion.Toolkit.Localization;
 using WPFLocalizeExtension.Engine;
+using ImageKit.Utility;
 
 namespace Diffusion.Toolkit
 {
@@ -114,16 +115,19 @@ namespace Diffusion.Toolkit
                                     _dataStore.DeleteImage(imagePath.Id);
 
                                     File.Delete(imagePath.Path);
-                                    var dir = Path.GetDirectoryName(imagePath.Path);
-                                    var fileName = Path.GetFileNameWithoutExtension(imagePath.Path);
-                                    var textFilePath = Path.Join(dir, $"{fileName}.txt");
 
-                                    File.Delete(imagePath.Path);
-                                    if (File.Exists(textFilePath))
-                                    {
-                                        File.Delete(textFilePath);
-                                    }
+                                    ImgHelper.DelExtFiles(imagePath.Path);
 
+                                    //var dir = Path.GetDirectoryName(imagePath.Path);
+                                    //var fileName = Path.GetFileNameWithoutExtension(imagePath.Path);
+                                    //var textFilePath = Path.Join(dir, $"{fileName}.txt");                                  
+
+                                    //File.Delete(imagePath.Path);
+
+                                    //if (File.Exists(textFilePath))
+                                    //{
+                                    //    File.Delete(textFilePath);
+                                    //}
                                 }
                                 catch (Exception e)
                                 {

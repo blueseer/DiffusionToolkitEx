@@ -12,8 +12,18 @@ namespace ImageKit.Utility
         public DateTime? Date { get; set; } = null;
         public string? Label { get; set; } = null;
 
+        public void Reset()
+        {
+            Title = null;
+            Description = null;
+            Rating = null;
+            Date = null;
+            Label = null;
+        }
+
         public XmpHelper? GetXmpData(string filePath) //, int? defaultRating = null
         {
+            Reset();
             // Ensure the file exists
             filePath = Path.ChangeExtension(filePath, ".xmp");
 

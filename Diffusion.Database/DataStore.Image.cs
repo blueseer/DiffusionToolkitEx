@@ -1,4 +1,5 @@
-﻿using SQLite;
+﻿using ImageKit.Utility;
+using SQLite;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -433,6 +434,7 @@ namespace Diffusion.Database
                     var fileName = Path.GetFileName(image.Path);
                     var newPath = Path.Join(path, fileName);
                     File.Move(image.Path, newPath);
+                    ImgHelper.MoveExtFiles(image.Path, newPath);
                     command.Bind("@Path", newPath);
                     command.ExecuteNonQuery();
                 }
