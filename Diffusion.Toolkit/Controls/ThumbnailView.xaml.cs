@@ -159,7 +159,7 @@ namespace Diffusion.Toolkit.Controls
                     {
                         XmpHelper xmp = new();
                         var xd = xmp.GetXmpData(SelectedImageEntry.Path);
-                        SelectedImageEntry=ImageUtil.PopulateImage(xd, SelectedImageEntry);
+                        SelectedImageEntry=ImageUtil.PopulateImageEntry(xd, SelectedImageEntry);
                         DataStore.SetRating(SelectedImageEntry.Id, SelectedImageEntry.Rating);
                         DataStore.SetCustomTags(SelectedImageEntry.Id, SelectedImageEntry.Label);
 

@@ -1,4 +1,5 @@
-﻿using ImageKit.Utility;
+﻿using Diffusion.Database;
+using ImageKit.Utility;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,24 +16,48 @@ namespace Diffusion.Toolkit.Common
         /// </summary>
         /// <param name="xd"></param>
         /// <returns></returns>
-        public static ImageEntry PopulateImage(XmpHelper? xd,ImageEntry image)
+        public static ImageEntry PopulateImageEntry(XmpHelper? xd, ImageEntry image)
         {
-            if(xd!=null)
+            if (xd != null)
             {
-                if(xd.Rating!=null)
+                if (xd.Rating != null)
                 {
-                    if(xd.Rating==-1)
+                    if (xd.Rating == -1)
                     {
                         image.ForDeletion = true; //rejects
-                    } else
+                    }
+                    else
                     {
-                        image.Rating=xd.Rating;
+                        image.Rating = xd.Rating;
                     }
                 }
-                if(xd.Label!=null)
+                if (xd.Label != null)
                 {
                     image.Label = xd.Label;
                 }
+            }
+            return image;
+        }
+
+        public static Image? PopulateImage(XmpHelper? xd, Image? image)
+        {
+            if (xd != null && image != null)
+            {
+                if (xd.Rating != null)
+                {
+                    if (xd.Rating == -1)
+                    {
+                        image.ForDeletion = true; //rejects
+                    }
+                    else
+                    {
+                        image.Rating = xd.Rating;
+                    }
+                }
+                //if (xd.Label != null)
+                //{
+                image.CustomTags = xd.Label;
+                //}
             }
             return image;
         }

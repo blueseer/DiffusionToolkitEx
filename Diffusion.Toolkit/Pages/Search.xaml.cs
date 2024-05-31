@@ -1461,7 +1461,7 @@ namespace Diffusion.Toolkit.Pages
                 if (_settings.AutoRefreshXmp) //disable by default because too slow
                 {
                     var xd = xmp.GetXmpData(file.Path);
-                    imageEntry = ImageUtil.PopulateImage(xd, imageEntry);
+                    imageEntry = ImageUtil.PopulateImageEntry(xd, imageEntry);
                     DataStore.SetRating(file.Id,imageEntry.Rating);
                     DataStore.SetCustomTags(file.Id, imageEntry.Label);
                 }

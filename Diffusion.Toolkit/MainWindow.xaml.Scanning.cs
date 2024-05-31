@@ -508,19 +508,7 @@ namespace Diffusion.Toolkit
 
                     ///get rating from XMP file                    
                     var xd = xmp.GetXmpData(file.Path);
-                    if(xd != null)
-                    {
-                        int? rating = xd.Rating;
-                        image.CustomTags = xd.Label;
-                        if (rating != null)
-                        {
-                            if (rating == -1)
-                                image.ForDeletion = true;
-                            else
-                                image.Rating = rating;
-                        }
-                    }
-
+                    image = ImageUtil.PopulateImage(xd, image);
 
                     if (!string.IsNullOrEmpty(file.HyperNetwork) && !file.HyperNetworkStrength.HasValue)
                     {

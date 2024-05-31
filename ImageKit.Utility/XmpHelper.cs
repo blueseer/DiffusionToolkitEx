@@ -68,6 +68,11 @@ namespace ImageKit.Utility
             }
             return this;
         }
+
+        /// <summary>
+        /// Warning: this doesn't reset null
+        /// </summary>
+        /// <param name="filePath"></param>
         public  void SetXmpData(string filePath)
         {
             IXmpMeta xmp;
@@ -91,7 +96,7 @@ namespace ImageKit.Utility
             string xmpBasicNamespace = "http://ns.adobe.com/xap/1.0/";
             if(Rating!=null)
             {
-                UpdateOrRemoveProperty(xmp, xmpBasicNamespace, "Rating", Rating.ToString());
+                UpdateOrRemoveProperty(xmp, xmpBasicNamespace, "Rating", Rating?.ToString());
             }            
             if(Label != null)
             {
@@ -146,7 +151,8 @@ namespace ImageKit.Utility
             return defaultRating;
         }
 
-        public static void SetXmpRating(string filePath, int? rating)
+
+        public static void SetXmpProperty(string filePath,string propertyName, string? value)
         {
             IXmpMeta xmp;
             // Load existing XMP metadata from the file
@@ -168,14 +174,8 @@ namespace ImageKit.Utility
             // Define the XMP namespace URI for XMP Basic (where the Rating property is usually found)
             string xmpBasicNamespace = "http://ns.adobe.com/xap/1.0/";
             // Define the property name for the Rating (adjust as needed based on your XMP structure)
-            string ratingPropertyName = "Rating";
 
-
-            UpdateOrRemoveProperty(xmp, xmpBasicNamespace, ratingPropertyName, rating?.ToString());
-
-            //string dcNamespace = "http://purl.org/dc/elements/1.1/";
-            //UpdateOrRemoveText(xmp, dcNamespace, "title", "Test title"); //Working, testing
-            //UpdateOrRemoveText(xmp, dcNamespace, "description", "Test my desc\nHello, how are you?"); //Working, testing
+            UpdateOrRemoveProperty(xmp, xmpBasicNamespace, propertyName, value);
 
             // Serialize the updated XMP metadata to a string
             var serializeOptions = new SerializeOptions { UseCompactFormat = false };
@@ -186,11 +186,46 @@ namespace ImageKit.Utility
             File.WriteAllText(filePath, updatedXmpString);
         }
 
+        //public static void SetXmpRating(string filePath, int? rating)
+        //{
+        //    IXmpMeta xmp;
+        //    // Load existing XMP metadata from the file
+        //    filePath = Path.ChangeExtension(filePath, ".xmp");
+        //    if (File.Exists(filePath))
+        //    {
+        //        // Load existing XMP metadata from the file
+        //        using (var stream = File.OpenRead(filePath))
+        //        {
+        //            xmp = XmpMetaFactory.Parse(stream);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        // Create new XMP metadata
+        //        xmp = XmpMetaFactory.Create();
+        //    }
+
+        //    // Define the XMP namespace URI for XMP Basic (where the Rating property is usually found)
+        //    string xmpBasicNamespace = "http://ns.adobe.com/xap/1.0/";
+        //    // Define the property name for the Rating (adjust as needed based on your XMP structure)
+
+        //    string ratingPropertyName = "Rating";
+        //    UpdateOrRemoveProperty(xmp, xmpBasicNamespace, ratingPropertyName, rating?.ToString());
+
+        //    // Serialize the updated XMP metadata to a string
+        //    var serializeOptions = new SerializeOptions { UseCompactFormat = false };
+        //    string updatedXmpString = XmpMetaFactory.SerializeToString(xmp, serializeOptions);
+
+        //    // Write the updated XMP metadata back to the file
+        //    // IMPORTANT: This example overwrites the original file. Consider creating a backup or working on a copy of the file.
+        //    File.WriteAllText(filePath, updatedXmpString);
+        //}
+
         public static void SetXmpRatings(IEnumerable<string> paths, int? rating)
         {
             foreach (var path in paths)
             {
-                SetXmpRating((string)path, rating);
+                SetXmpProperty((string)path,"Rating", rating?.ToString());
             }
         }
 
@@ -199,8 +234,9 @@ namespace ImageKit.Utility
             XmpHelper xmp = new();
             foreach (var path in paths)
             {
-                xmp.Label = label;
-                xmp.SetXmpData(path);
+                SetXmpProperty(path, "Label", label);
+                //xmp.Label = label;
+                //xmp.SetXmpData(path);
             }
         }
 
